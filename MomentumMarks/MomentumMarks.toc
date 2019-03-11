@@ -1,0 +1,12 @@
+## Interface: 20400
+## Title: MomentumMarks
+## Author: Latmask
+## Version: 1.0
+## Notes: Simple BananaBar like addon for tbc.
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: MOMENTUM_MARKS_SETTINGS, MOMENTUM_MARKS_UI_SETTINGS
+CoreUtils.lua
+MomentumMarksUI.lua
+MomentumMarks.lua
+MomentumMarks.xml
