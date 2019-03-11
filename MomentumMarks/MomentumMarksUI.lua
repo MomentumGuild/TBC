@@ -101,9 +101,9 @@ end
 ]]
 local function MomentumMarksUI_CreateTankSelectorToggle()
   local tank_selector_toggle = CreateFrame("Button", "TankSelectorToggle", UIParent)
+  tank_selector_toggle:RegisterForClicks("LeftButtonDown", "RightButtonDown")
   tank_selector_toggle:SetMovable(true)
   tank_selector_toggle:EnableMouse(true)
-  tank_selector_toggle:RegisterForDrag("LeftButton")
   tank_selector_toggle:SetClampedToScreen(true)
   tank_selector_toggle:SetPoint("CENTER");
   tank_selector_toggle:SetWidth(64);
@@ -197,7 +197,7 @@ end
 
 --[[ ================= EXPORT ====================== ]]
 
-local MomentumMarksUI = { MarkerGroup = nil, TankSelector = nil, TankSelectorToggle = nil}
+MomentumMarksUI = { MarkerGroup = nil, TankSelector = nil, TankSelectorToggle = nil}
 
 function MomentumMarksUI:New()
   local q = q or {}
@@ -301,4 +301,4 @@ function MomentumMarksUI:PopulateSelectTankFrames(tanks)
   end
 end
 
-if CoreUtils.IsMomentum() then MOM_UI = MomentumMarksUI:New() end
+return MomentumMarksUI

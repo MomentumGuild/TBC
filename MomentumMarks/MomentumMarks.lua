@@ -1,6 +1,7 @@
 --[[ ================= STORED VARIABLES ====================== ]]
 MOMENTUM_MARKS_SETTINGS = MOMENTUM_MARKS_SETTINGS or {
-  ["Tanks"] = {}
+  ["Tanks"] = {},
+  ["sync"] = true
 }
 
 --[[ ================= LOCAL VARIABLES ====================== ]]
@@ -44,6 +45,7 @@ function MomentumMarks_OnLoad(self)
   self:RegisterEvent("PLAYER_REGEN_ENABLED");
   self:RegisterEvent("CHAT_MSG_ADDON")
 
+  MOM_UI = MomentumMarksUI:New()
   MOM_UI:OnToggleTankSelector(MomentumMarks_OnToggleTankSelector)
   MOM_UI:OnSelectTank(MomentumMarks_OnSelectTank)
 end
@@ -72,6 +74,7 @@ end
 function MomentumMarks_OnEvent(self, event, prefix, message, channel, sender)
   if ( event == "PLAYER_ENTERING_WORLD" ) then
     if MOMENTUM_MARKS_SETTINGS.locked then MOM_UI:Lock() end
+    if not MOMENTUM_MARKS_SETTINGS.sync then MOM_UI.TankSelectorToggle.texture:SetTexture(0.5, 0.5, 0.5) end
     if (not MomentumMarks_IsRaidLeader()) then MomentumMarks_RequestBroadcast()
     else MomentumMarks_CleanTanks() end
   end
@@ -85,7 +88,7 @@ function MomentumMarks_OnEvent(self, event, prefix, message, channel, sender)
   end
 
   if (event == "CHAT_MSG_ADDON" and prefix == "MomentumMarks") then
-    MomentumMarks_Recieve(event, prefix, message, sender)
+    if (MOMENTUM_MARKS_SETTINGS.sync) then MomentumMarks_Recieve(event, prefix, message, sender) end
   end
 end
 
@@ -95,12 +98,23 @@ end
 
 ]]
 function MomentumMarks_OnToggleTankSelector()
+  local button = GetMouseButtonClicked();
   if MOM_UI.TankSelector then
-    if MOM_UI.TankSelector:IsShown() then MOM_UI.TankSelector:Hide()
+    if button == "RightButton" then MomentumMarks_OnToggleSync()
+    elseif MOM_UI.TankSelector:IsShown() then MOM_UI.TankSelector:Hide()
     else
       MOM_UI:PopulateSelectTankFrames(MOMENTUM_MARKS_SETTINGS.Tanks)
       MOM_UI.TankSelector:Show()
     end
+  end
+end
+
+function MomentumMarks_OnToggleSync()
+  MOMENTUM_MARKS_SETTINGS.sync = not MOMENTUM_MARKS_SETTINGS.sync
+  if not MOMENTUM_MARKS_SETTINGS.sync then MOM_UI.TankSelectorToggle.texture:SetTexture(0.5, 0.5, 0.5)
+  else
+    MOM_UI.TankSelectorToggle.texture:SetTexture(0, 0, 0)
+    MomentumMarks_RequestBroadcast()
   end
 end
 
